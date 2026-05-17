@@ -26,18 +26,22 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest
 
-      - name: Deploy en EC2
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.EC2_FRONTEND_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest
-            docker stop frontend || true
-            docker rm frontend || true
-            docker run -d \
-              --name frontend \
-              -p 80:80 \
-              --restart always \
-              ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: Ejecutar deploy via SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids "i-034188b32f54ef080" \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=[
+              "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest",
+              "docker stop frontend || true",
+              "docker rm frontend || true",
+              "docker run -d --name frontend -p 80:80 --restart always ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest"
+            ]'
