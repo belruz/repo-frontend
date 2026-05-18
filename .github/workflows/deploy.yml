@@ -34,14 +34,17 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
+      - name: Crear docker-compose en EC2
+        run: |
+          COMPOSE_CONTENT=$(cat docker-compose.yml | base64 -w 0)
+          aws ssm send-command \
+            --instance-ids "i-034188b32f54ef080" \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands=["echo $COMPOSE_CONTENT | base64 -d > /home/ssm-user/docker-compose.yml"]
+
       - name: Ejecutar deploy via SSM
         run: |
           aws ssm send-command \
             --instance-ids "i-034188b32f54ef080" \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=[
-              "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest",
-              "docker stop frontend || true",
-              "docker rm frontend || true",
-              "docker run -d --name frontend -p 80:80 --restart always ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest"
-            ]'
+            --parameters commands='["docker pull ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest","docker ps -q --filter \"publish=80\" | xargs -r docker rm -f || true","cd /home/ssm-user && docker compose pull && docker compose up -d --remove-orphans"]'
