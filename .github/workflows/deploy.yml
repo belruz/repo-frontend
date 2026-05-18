@@ -47,4 +47,4 @@ jobs:
           aws ssm send-command \
             --instance-ids "i-034188b32f54ef080" \
             --document-name "AWS-RunShellScript" \
-            --parameters commands='["docker pull ${{ secrets.DOCKERHUB_USERNAME }}/repo-frontend:latest","docker ps -q --filter \"publish=80\" | xargs -r docker rm -f || true","cd /home/ssm-user && docker-compose pull && docker-compose up -d --remove-orphans"]'
+            --parameters commands='["if ! command -v docker-compose >/dev/null 2>&1; then sudo curl -L https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose; fi","docker rm -f frontend || true","cd /home/ssm-user && docker-compose pull && docker-compose up -d --remove-orphans"]'
