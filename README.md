@@ -14,21 +14,17 @@ Frontend desarrollado en React + Vite, desplegado en AWS EC2 mediante contenedor
 - IP pública: 34.194.185.50
 - Puerto: 80
 
+El contenedor incluye Nginx como servidor estatico y proxy para rutas `/api` hacia los backends privados.
+
 ## Pipeline CI/CD
 El pipeline se activa con push en la rama `deploy`:
 1. Construye imagen Docker multi-stage
 2. Publica imagen en Docker Hub
-3. Despliega en EC2 via AWS SSM
+3. Despliega en EC2 via AWS SSM usando `docker-compose`
 
-## Cómo usar
-```bash
-# Desarrollo local
-npm install
-npm run dev
+## Docker Compose
+- `docker-compose.yml` levanta el servicio `frontend` en el puerto 80.
+- El archivo `nginx.conf` realiza proxy a:
+	- `/api/ventas` -> Backend Ventas (puerto 8080) en la subred privada
+	- `/api/despachos` -> Backend Despachos (puerto 8081) en la subred privada
 
-# Build producción
-npm run build
-```
-
-## Variables de entorno
-No requiere variables de entorno adicionales.
