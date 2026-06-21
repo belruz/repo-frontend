@@ -7,7 +7,7 @@ on:
 
 env:
   ECR_REPO: innovatech-frontend
-  EKS_NAMESPACE: innovatech
+  EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
   DEPLOYMENT_NAME: frontend
   CONTAINER_NAME: frontend
 
@@ -25,7 +25,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
           
       - name: Login a Amazon ECR
         id: login-ecr
@@ -51,7 +51,7 @@ jobs:
 
       - name: Configurar kubeconfig para EKS
         run: |
-          aws eks update-kubeconfig --region us-east-1 --name ${{ secrets.EKS_CLUSTER_NAME }}
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
           kubectl config current-context
 
       - name: Aplicar manifests base
