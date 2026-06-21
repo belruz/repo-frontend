@@ -26,23 +26,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
-
-<<<<<<< Updated upstream
-      - name: Crear docker-compose en EC2
-        run: |
-          COMPOSE_CONTENT=$(cat docker-compose.yml | base64 -w 0)
-          aws ssm send-command \
-            --instance-ids "i-034188b32f54ef080" \
-            --document-name "AWS-RunShellScript" \
-            --parameters commands=["echo $COMPOSE_CONTENT | base64 -d > /home/ssm-user/docker-compose.yml"]
-
-      - name: Ejecutar deploy via SSM
-        run: |
-          aws ssm send-command \
-            --instance-ids "i-034188b32f54ef080" \
-            --document-name "AWS-RunShellScript" \
-            --parameters commands='["if ! command -v docker-compose >/dev/null 2>&1; then sudo curl -L https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose; fi","docker rm -f frontend || true","cd /home/ssm-user && docker-compose pull && docker-compose up -d --remove-orphans"]'
-=======
+          
       - name: Login a Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -73,7 +57,7 @@ jobs:
       - name: Aplicar manifests base
         run: |
           kubectl apply -f k8s/namespace.yaml
-          kubectl apply -f k8s/
+          kubectl  apply -f k8s/
 
       - name: Actualizar imagen del deployment
         env:
@@ -88,4 +72,3 @@ jobs:
         run: |
           kubectl get pods -n ${EKS_NAMESPACE}
           kubectl get svc -n ${EKS_NAMESPACE}
->>>>>>> Stashed changes
