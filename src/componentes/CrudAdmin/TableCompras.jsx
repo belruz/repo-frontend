@@ -7,15 +7,11 @@ export const TableCompras = () => {
   const [ventas, setVentas] = useState([]);
 
   const compras = async () => {
-<<<<<<< Updated upstream
-    await axios.get("/api/ventas", {
-=======
     await axios.get(`${import.meta.env.VITE_API_VENTAS_URL}/api/v1/ventas`, {
->>>>>>> Stashed changes
-      headers:{
+      headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-  }
+      }
     }).then((response) => {
       console.log(response.data);
       setVentas(response.data);
