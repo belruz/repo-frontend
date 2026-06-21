@@ -25,7 +25,11 @@ export const FormDespacho = ({ venta, onClose }) => {
 
     try {
       await axios.put(
+<<<<<<< Updated upstream
         `/api/ventas/${venta.idVenta}`,
+=======
+        `${import.meta.env.VITE_API_VENTAS_URL}/api/v1/ventas/${venta.idVenta}`,
+>>>>>>> Stashed changes
         jsonDataSales,
         {
           headers:{
@@ -34,7 +38,11 @@ export const FormDespacho = ({ venta, onClose }) => {
       }
         }
       );
+<<<<<<< Updated upstream
       await axios.post("/api/despachos", jsonData, {
+=======
+      await axios.post(`${import.meta.env.VITE_API_DESPACHOS_URL}/api/v1/despachos`, jsonData, {
+>>>>>>> Stashed changes
         headers:{
           'Content-Type': 'application/json',
           'Accept': 'application/json'

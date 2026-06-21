@@ -16,7 +16,11 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
 
     try {
       await axios.put(
+<<<<<<< Updated upstream
         `/api/despachos/${despacho.idDespacho}`,
+=======
+        `${import.meta.env.VITE_API_DESPACHOS_URL}/api/v1/despachos/${despacho.idDespacho}`,
+>>>>>>> Stashed changes
         jsonData,
         {
           headers:{

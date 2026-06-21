@@ -8,7 +8,11 @@ export const TableDespachos = () => {
 
   const despacho = async () => {
     await axios
+<<<<<<< Updated upstream
       .get("/api/despachos", {
+=======
+      .get(`${import.meta.env.VITE_API_DESPACHOS_URL}/api/v1/despachos`, {
+>>>>>>> Stashed changes
         headers:{
               'Content-Type': 'application/json',
               'Accept': 'application/json'
